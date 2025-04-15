@@ -1,6 +1,11 @@
 pipeline {
   agent any
   stages {
+    stage('Gradlew init') {
+        steps {
+            sh './gradlew -v'
+        }
+    }
     stage('Static code analysis') {
       steps {
         sh '''./gradlew check -x test 
