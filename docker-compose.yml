@@ -1,4 +1,36 @@
 services:
+  server:
+    build:
+      context: .
+      #target: final
+    ports:
+      - 8085:8080
+      - 8000:8000
+    depends_on:
+       db:
+         condition: service_healthy
+    environment:
+      - POSTGRES_URL=jdbc:postgresql://db:5432/petclinic
+    develop:
+      watch:
+        - action: rebuild
+          path: .
+  db:
+    image: postgres
+    restart: always
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=petclinic
+      - POSTGRES_USER=petclinic
+      - POSTGRES_PASSWORD=petclinic
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "petclinic" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   mysql:
     image: mysql:9.1
     ports:
@@ -11,11 +43,5 @@ services:
       - MYSQL_DATABASE=petclinic
     volumes:
       - "./conf.d:/etc/mysql/conf.d:ro"
-  postgres:
-    image: postgres:17.0
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_PASSWORD=petclinic
-      - POSTGRES_USER=petclinic
-      - POSTGRES_DB=petclinic
+volumes:
+  db-data:
