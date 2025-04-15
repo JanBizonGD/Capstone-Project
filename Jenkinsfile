@@ -24,20 +24,20 @@ pipeline {
       steps {
         sh '''docker build -t petclinic:latest .
 '''
-        sh 'docker tag petclinic host.docker.internal:9902/mr:$GIT_COMMIT'
+        sh 'docker tag petclinic acrpetclinic1234.azurecr.io/pet_app:$GIT_COMMIT'
       }
     }
 // TODO: adjust repository values
     stage('Docker push to repository') {
       steps {
         sh 'docker images'
-        sh 'docker login -u $artifact_repo_USR -p $artifact_repo_PSW http://host.docker.internal:9902'
-        sh 'docker push host.docker.internal:9902/mr:$GIT_COMMIT'
+        sh 'docker login -u $artifact_repo_USR -p $artifact_repo_PSW acrpetclinic1234.azurecr.io'
+        sh 'docker push acrpetclinic1234.azurecr.io/pet_app:$GIT_COMMIT'
       }
     }
   }
   environment {
-    artifact_repo = credentials('artifact-repo')
+    artifact_repo = credentials('acr-cred')
   }
 }
 //
