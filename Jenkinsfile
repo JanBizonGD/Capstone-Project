@@ -8,8 +8,7 @@ pipeline {
     }
     stage('Static code analysis') {
       steps {
-        sh '''./gradlew check -x test 
-'''
+        sh './gradlew check -x test'
         archiveArtifacts(artifacts: 'src/checkstyle/nohttp-checkstyle.xml', fingerprint: true)
       }
     }
