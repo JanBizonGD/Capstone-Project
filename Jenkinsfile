@@ -1,13 +1,9 @@
 pipeline {
   agent any
   stages {
-    stage('Gradlew init') {
-        steps {
-            sh './gradlew -v'
-        }
-    }
     stage('Static code analysis') {
       steps {
+        sh './gradlew -v'
         sh './gradlew check -x test'
         archiveArtifacts(artifacts: 'src/checkstyle/nohttp-checkstyle.xml', fingerprint: true)
       }
