@@ -11,7 +11,7 @@ RUN --mount=type=bind,source=settings.gradle,target=settings.gradle \
     --mount=type=bind,source=build.gradle,target=build.gradle \
     --mount=type=cache,target=/root/.m2 \
     ./gradlew build -x test && \
-    mv build/lib/$(./gradlew -q properties | awk -F ': ' '/^name: / {name=$2} /^version: / {version=$2} END {print name "-" version ".jar"}') target/app.jar
+    mv build/lib/$(./gradlew -q eval "println \"\${project.name}-\${project.version}\".jar") target/app.jar
 RUN java -Djarmode=layertools -jar target/app.jar extract --destination target/extracted
 
 
