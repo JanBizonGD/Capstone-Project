@@ -5,7 +5,7 @@ WORKDIR /build
 COPY ./src src/
 COPY ./gradlew ./gradlew
 COPY ./.gradle ./.gradle
-COPY ~/.gradle ~/.gradle
+# COPY ~/.gradle ~/.gradle
 RUN --mount=type=bind,source=settings.gradle,target=settings.gradle \
     --mount=type=bind,source=build.gradle,target=build.gradle \
     --mount=type=cache,target=/root/.m2 \
