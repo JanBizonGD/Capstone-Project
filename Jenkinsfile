@@ -48,6 +48,7 @@ pipeline {
       steps {
         sh 'env.RELEASE_VERSION=$(pysemver nextver $(sudo ./gradlew -q properties --property version | grep -o "version.*" | cut -f2 -d' ') minor)' 
       }
+    }
     stage('Docker push to main') {
       steps {
         sh 'docker login -u $artifact_repo_USR -p $artifact_repo_PSW acrpetclinic1234.azurecr.io' 
