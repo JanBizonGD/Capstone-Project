@@ -5,7 +5,7 @@ pipeline {
       steps {
         sh 'gradle -v'
         sh 'echo $JAVA_HOME'
-        sh 'gradle check -x test'
+        sh 'gradle check -x test --stacktrace'
         archiveArtifacts(artifacts: 'src/checkstyle/nohttp-checkstyle.xml', fingerprint: true)
       }
     }
