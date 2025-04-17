@@ -48,7 +48,7 @@ pipeline {
       when {
         //branch 'origin/main'
         expression {
-            return env.BRANCH_NAME == 'origin/master';
+            return env.BRANCH_NAME == 'origin/main';
         }
       }
       steps {
@@ -61,7 +61,7 @@ pipeline {
       when {
         //branch 'origin/main'
         expression {
-            return env.BRANCH_NAME == 'origin/master';
+            return env.BRANCH_NAME == 'origin/main';
         }
       }
       steps {
