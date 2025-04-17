@@ -35,7 +35,7 @@ pipeline {
     stage('Docker push to repository') {
       steps {
         sh 'docker images'
-        sh 'docker login -u $artifact_repo_USR -p $artifact_repo_PSW acrpetclinic1234.azurecr.io' //
+        sh 'docker login -u $artifact_repo_USR -p $artifact_repo_PSW acrpetclinic1234.azurecr.io' 
         sh 'docker push acrpetclinic1234.azurecr.io/pet_app:$GIT_COMMIT'
       }
     }
