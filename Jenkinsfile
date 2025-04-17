@@ -15,6 +15,7 @@ pipeline {
         sh 'echo $JAVA_HOME'
         sh './gradlew check -x test --stacktrace'
         archiveArtifacts(artifacts: 'build/reports/checkstyleNohttp/nohttp.html', fingerprint: true)
+        archiveArtifacts(artifacts: 'build/reports/tests/test/*', fingerprint: true)
       }
     }
     stage('Java test with Gradle') {
@@ -65,7 +66,8 @@ pipeline {
         }
       }
       steps {
-        sh 'docker login -u $artifact_repo_USR -p $artifact_repo_PSW acrpetclinic1234.azurecr.io' 
+        sh 'docker login -u $artifact_repo_USR -p $artifact_repo_PSW acrpetclinic1234.azurecr.io'
+        sh 'docker tag petclinic acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION'
         sh 'docker push acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION'
         sh 'git tags $RELEASE_VERSION'
         sh 'git push --tags'
