@@ -46,7 +46,7 @@ pipeline {
     }
     stage('Change version') {
       when {
-        branch 'main'
+        branch 'origin/main'
       }
       steps {
         script {
@@ -56,7 +56,7 @@ pipeline {
     }
     stage('Docker push to main') {
       when {
-        branch 'main'
+        branch 'origin/main'
       }
       steps {
         sh 'docker login -u $artifact_repo_USR -p $artifact_repo_PSW acrpetclinic1234.azurecr.io' 
