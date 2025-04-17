@@ -46,7 +46,10 @@ pipeline {
     }
     stage('Change version') {
       when {
-        branch 'origin/main'
+        //branch 'origin/main'
+        expression {
+            return env.BRANCH_NAME == 'origin/master';
+        }
       }
       steps {
         script {
@@ -56,7 +59,10 @@ pipeline {
     }
     stage('Docker push to main') {
       when {
-        branch 'origin/main'
+        //branch 'origin/main'
+        expression {
+            return env.BRANCH_NAME == 'origin/master';
+        }
       }
       steps {
         sh 'docker login -u $artifact_repo_USR -p $artifact_repo_PSW acrpetclinic1234.azurecr.io' 
