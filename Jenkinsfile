@@ -9,6 +9,8 @@ pipeline {
         sh 'echo $BRANCH_NAME_LOCAL'
         sh 'echo $BRANCH_NAME'
         sh 'echo env.BRANCH_NAME'
+        sh 'echo $GIT_LOCAL_BRANCH'
+        sh 'echo $GIT_BRANCH'
       }
     }
     stage('Static code analysis') {
