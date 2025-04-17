@@ -6,7 +6,9 @@ pipeline {
   stages {
     stage('Display git'){
       steps {
-        sh 'echo $GIT_BRANCH_LOCAL'
+        sh 'echo $BRANCH_NAME_LOCAL'
+        sh 'echo $BRANCH_NAME'
+        sh 'echo env.BRANCH_NAME'
       }
     }
     stage('Static code analysis') {
