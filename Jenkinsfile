@@ -1,8 +1,8 @@
 pipeline {
   agent any
-  tools {
-    'org.jenkinsci.plugins.docker.commons.tools.DockerTool' '18.09'  
-  }
+  // tools {
+  //   'org.jenkinsci.plugins.docker.commons.tools.DockerTool' '18.09'  
+  // }
   stages {
     stage('Static code analysis') {
       steps {
@@ -35,7 +35,7 @@ pipeline {
     stage('Docker push to repository') {
       steps {
         sh 'docker images'
-        sh 'docker login acrpetclinic1234.azurecr.io' //-u $artifact_repo_USR -p $artifact_repo_PSW
+        sh 'docker login -u $artifact_repo_USR -p $artifact_repo_PSW acrpetclinic1234.azurecr.io' //
         sh 'docker push acrpetclinic1234.azurecr.io/pet_app:$GIT_COMMIT'
       }
     }
