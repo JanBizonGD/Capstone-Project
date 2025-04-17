@@ -3,19 +3,19 @@ pipeline {
   stages {
     stage('Static code analysis') {
       steps {
-        sh './gradlew -v'
-        sh './gradlew check -x test'
+        sh 'gradle -v'
+        sh 'gradle check -x test'
         archiveArtifacts(artifacts: 'src/checkstyle/nohttp-checkstyle.xml', fingerprint: true)
       }
     }
     stage('Java test with Gradle') {
       steps {
-        sh './gradlew test'
+        sh 'gradle test'
       }
     }
     stage('Java build with Gradle') {
       steps {
-        sh './gradlew build  -x test'
+        sh 'gradle build  -x test'
       }
     }
 // maybe change to docker compose
