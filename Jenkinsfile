@@ -4,6 +4,7 @@ pipeline {
     stage('Static code analysis') {
       steps {
         sh 'gradle -v'
+        sh 'echo $JAVA_HOME'
         sh 'gradle check -x test'
         archiveArtifacts(artifacts: 'src/checkstyle/nohttp-checkstyle.xml', fingerprint: true)
       }
