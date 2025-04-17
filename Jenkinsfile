@@ -39,6 +39,7 @@ pipeline {
   }
   environment {
     artifact_repo = credentials('acr-cred')
+    JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64/"
   }
 }
 
