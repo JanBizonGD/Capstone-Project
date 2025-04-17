@@ -1,31 +1,31 @@
 pipeline {
   agent any
-  tools {
-    gradle 'Gradle'
-  }
+  // tools {
+  //   gradle 'Gradle'
+  // }
   stages {
     stage('Static code analysis') {
       steps {
-        withGradle {
-          sh 'gradle -v'
+        // withGradle {
+          sh './gradlew -v'
           sh 'echo $JAVA_HOME'
-          sh 'gradle check -x test --stacktrace'
-        }
+          sh './gradlew check -x test --stacktrace'
+        // }
         archiveArtifacts(artifacts: 'src/checkstyle/nohttp-checkstyle.xml', fingerprint: true)
       }
     }
     stage('Java test with Gradle') {
       steps {
-        withGradle {
-          sh 'gradle test'
-        }
+        // withGradle {
+          sh './gradlew test'
+        // }
       }
     }
     stage('Java build with Gradle') {
       steps {
-        withGradle {
-          sh 'gradle build  -x test'
-        }
+        // withGradle {
+          sh './gradlew build  -x test'
+        // }
       }
     }
 // maybe change to docker compose
