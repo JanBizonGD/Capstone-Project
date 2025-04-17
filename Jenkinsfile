@@ -46,7 +46,7 @@ pipeline {
     }
     stage('Change version') {
       steps {
-        sh "env.RELEASE_VERSION=$(pysemver nextver $(sudo ./gradlew -q properties --property version | grep -o 'version.*' | cut -f2 -d' ') minor)"
+        sh 'env.RELEASE_VERSION=$(pysemver nextver $(sudo ./gradlew -q properties --property version | grep -o \'version.*\' | cut -f2 -d\' \') minor)'
       }
     }
     stage('Docker push to main') {
