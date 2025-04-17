@@ -4,13 +4,9 @@ pipeline {
   //   'org.jenkinsci.plugins.docker.commons.tools.DockerTool' '18.09'  
   // }
   stages {
-    stage('Display git'){
+    stage('Display branch'){
       steps {
-        sh 'echo $BRANCH_NAME_LOCAL'
-        sh 'echo $BRANCH_NAME'
-        sh 'echo env.BRANCH_NAME'
-        sh 'echo $GIT_LOCAL_BRANCH'
-        sh 'echo $GIT_BRANCH'
+        sh 'echo Current branch: $GIT_BRANCH'
       }
     }
     stage('Static code analysis') {
@@ -18,7 +14,7 @@ pipeline {
         sh './gradlew -v'
         sh 'echo $JAVA_HOME'
         sh './gradlew check -x test --stacktrace'
-        archiveArtifacts(artifacts: 'src/checkstyle/nohttp-checkstyle.xml', fingerprint: true)
+        archiveArtifacts(artifacts: 'build/reports/checkstyleNohttp/nohttp.html', fingerprint: true)
       }
     }
     stage('Java test with Gradle') {
@@ -49,11 +45,17 @@ pipeline {
       }
     }
     stage('Change version') {
+      when {
+        branch 'main'
+      }
       steps {
-        sh 'env.RELEASE_VERSION=$(pysemver nextver $(sudo ./gradlew -q properties --property version | grep -o \'version.*\' | cut -f2 -d\' \') minor)'
+        env.RELEASE_VERSION = sh(script: 'pysemver nextver $(sudo ./gradlew -q properties --property version | grep -o \'version.*\' | cut -f2 -d\' \') minor', returnStdout: true).trim()
       }
     }
     stage('Docker push to main') {
+      when {
+        branch 'main'
+      }
       steps {
         sh 'docker login -u $artifact_repo_USR -p $artifact_repo_PSW acrpetclinic1234.azurecr.io' 
         sh 'docker push acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION'
