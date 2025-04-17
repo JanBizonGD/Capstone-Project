@@ -9,7 +9,7 @@ pipeline {
         withGradle {
           sh 'gradle -v'
           sh 'echo $JAVA_HOME'
-          sh './gradlew check -x test --stacktrace'
+          sh 'gradle check -x test --stacktrace'
         }
         archiveArtifacts(artifacts: 'src/checkstyle/nohttp-checkstyle.xml', fingerprint: true)
       }
