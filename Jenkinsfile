@@ -1,8 +1,5 @@
 pipeline {
   agent any
-  // tools {
-  //   'org.jenkinsci.plugins.docker.commons.tools.DockerTool' '18.09'  
-  // }
   stages {
     stage('Display branch'){
       steps {
@@ -13,7 +10,7 @@ pipeline {
       steps {
         sh './gradlew -v'
         sh 'echo $JAVA_HOME'
-        sh './gradlew check -x test --stacktrace'
+        sh './gradlew check --stacktrace'
         archiveArtifacts(artifacts: 'build/reports/checkstyleNohttp/nohttp.html', fingerprint: true)
       }
     }
@@ -28,7 +25,6 @@ pipeline {
         sh './gradlew build  -x test'
       }
     }
-// maybe change to docker compose
     stage('Docker build with docker') {
       steps {
         sh 'docker version'
@@ -37,7 +33,6 @@ pipeline {
       }
     }
     // TODO: push jar files
-  // TODO: install python3-semver
     stage('Docker push to repository') {
       steps {
         sh 'docker images'
@@ -60,7 +55,6 @@ pipeline {
     }
     stage('Docker push to main') {
       when {
-        //branch 'origin/main'
         expression {
             return "$GIT_BRANCH" == 'origin/main';
         }
@@ -70,7 +64,7 @@ pipeline {
         sh 'docker tag petclinic acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION'
         sh 'docker push acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION'
         // TODO: check if tag already exist
-        //sh 'git tag $RELEASE_VERSION'
+        sh 'git tag $RELEASE_VERSION || true'
         //sh 'git push --tags'
         // TODO: Credentials
       }
@@ -106,6 +100,9 @@ pipeline {
             deployment_group_cred = credentials('deploy-group-cred')
             VM_LIST="10.1.2.4,10.1.2.7,10.1.2.8"
             ANSIBLE_HOST_KEY_CHECKING='False'
+            DB_HOST="petclinic-sqlserver.database.windows.net"
+            DB_USER="azureuser"
+            DB_PASS="Password123!"
       }
     }
   }
