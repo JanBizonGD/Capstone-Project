@@ -103,6 +103,7 @@ pipeline {
       environment {
             deployment_group_cred = credentials('deploy-group-cred')
             VM_LIST="10.1.2.5,10.1.2.6,10.1.2.7"
+            ANSIBLE_HOST_KEY_CHECKING='False'
       }
     }
   }
