@@ -75,16 +75,16 @@ pipeline {
         // TODO: Credentials
       }
     }
-    stage('Approve') {
-      when {
-        expression {
-            return "$GIT_BRANCH" == 'origin/main';
-        }
-      }
-      steps {
-        input message: 'Would you like to deploy?', ok: 'Yes', cancel: 'No'
-      }
-    }
+    // stage('Approve') {
+    //   when {
+    //     expression {
+    //         return "$GIT_BRANCH" == 'origin/main';
+    //     }
+    //   }
+    //   steps {
+    //     input message: 'Would you like to deploy?', ok: 'Yes', cancel: 'No'
+    //   }
+    // }
     stage('Deploy') {
       when {
         expression {
