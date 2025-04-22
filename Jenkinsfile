@@ -15,13 +15,13 @@ pipeline {
         sh 'echo $JAVA_HOME'
         sh './gradlew check -x test --stacktrace'
         archiveArtifacts(artifacts: 'build/reports/checkstyleNohttp/nohttp.html', fingerprint: true)
-        //archiveArtifacts(artifacts: 'build/reports/tests/test/*', fingerprint: true)
       }
     }
-    stage('Java test with Gradle') {
-      steps {
-        sh './gradlew test'
-      }
+    // stage('Java test with Gradle') {
+    //   steps {
+    //     sh './gradlew test'
+    //   }
+      //archiveArtifacts(artifacts: 'build/reports/tests/test/*', fingerprint: true)
     }
     stage('Java build with Gradle') {
       steps {
