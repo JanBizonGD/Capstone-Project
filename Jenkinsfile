@@ -75,7 +75,7 @@ pipeline {
         // TODO: Credentials
       }
     }
-    stage('Deploy') {
+    stage('Approve') {
       when {
         expression {
             return "$GIT_BRANCH" == 'origin/main';
@@ -83,6 +83,16 @@ pipeline {
       }
       steps {
         input message: 'Would you like to deploy?', ok: 'Yes', cancel: 'No'
+      }
+    }
+    stage('Deploy') {
+      when {
+        expression {
+            return "$GIT_BRANCH" == 'origin/main';
+        }
+      }
+      steps {
+        //input message: 'Would you like to deploy?', ok: 'Yes', cancel: 'No'
         sh 'ansible all -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker rm -f petclinic || true && docker rmi $MAIN_REPO:latest || true"'
         sh 'ansible all -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker pull acrpetclinic1234.azurecr.io/$MAIN_REPO:latest"'
         sh 'ansible all -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker run -d --name petclinic -p 8080:8080 acrpetclinic1234.azurecr.io/$MAIN_REPO:latest"'
