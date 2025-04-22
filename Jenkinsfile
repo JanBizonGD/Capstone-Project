@@ -70,7 +70,28 @@ pipeline {
         sh 'docker tag petclinic acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION'
         sh 'docker push acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION'
         sh 'git tag $RELEASE_VERSION'
-        sh 'git push --tags'
+        //sh 'git push --tags'
+        // TODO: Credentials
+      }
+    }
+    stage('Deploy') {
+      when {
+        expression {
+            return "$GIT_BRANCH" == 'origin/main';
+        }
+      }
+      steps {
+        input message: 'Would you like to deploy?', ok: 'Yes', cancel: 'No'
+        sh 'ansible all -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker rm -f petclinic || true && docker rmi $MAIN_REPO:latest || true"'
+        sh 'ansible all -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker pull acrpetclinic1234.azurecr.io/$MAIN_REPO:latest"'
+        sh 'ansible all -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker run -d --name petclinic -p 8080:8080 acrpetclinic1234.azurecr.io/$MAIN_REPO:latest"'
+//ansible all -i <vm_ip>, -u <user> -m shell -a "docker run -d --name myapp -e DB_HOST=<mysql_host> -e DB_USER=<user> -e DB_PASS=<pass> -p 80:80 <registry_url>/myapp:latest"
+// TODO: Display link
+// TODO: connect to sql database
+      }
+      environment {
+            deployment_group_cred = credentials('deploy-group-cred')
+            VM_LIST="10.1.2.5,10.1.2.6,10.1.2.7"
       }
     }
   }
