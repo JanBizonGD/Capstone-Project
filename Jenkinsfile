@@ -22,7 +22,7 @@ pipeline {
     //     sh './gradlew test'
     //   }
       //archiveArtifacts(artifacts: 'build/reports/tests/test/*', fingerprint: true)
-    }
+    //}
     stage('Java build with Gradle') {
       steps {
         sh './gradlew build  -x test'
