@@ -15,7 +15,7 @@ pipeline {
           //env.DB_HOST = //
           echo "IPs: ${props.IPs}"
           echo "Host name: ${props.URIs}"
-          def conv_uri = props.URIs.replace('[', '').replace(']', '').replace(' ', '')
+          def conv_uri = props.IPs.replace('[', '').replace(']', '').replace(' ', '')
           echo "${conv_uri}"
         }
       }
