@@ -11,12 +11,13 @@ pipeline {
         )
         script {
           def props = readProperties file: 'Infrastructure/deploy-info.txt'
-          //env.VM_LIST = //
-          //env.DB_HOST = //
           echo "IPs: ${props.IPs}"
           echo "Host name: ${props.URIs}"
-          def conv_uri = props.IPs.replace('[', '').replace(']', '').replace(' ', '')
-          echo "${conv_uri}"
+          def conv_ips = props.IPs.replace('[', '').replace(']', '').replace(' ', '').replace('"', '')
+          echo "Converted IPs: ${conv_ips}"
+
+          env.VM_LIST = conv_ips
+          env.DB_HOST = props.URIs
         }
       }
     }
@@ -117,9 +118,9 @@ pipeline {
       }
       environment {
             deployment_group_cred = credentials('deploy-group-cred')
-            VM_LIST="10.1.2.4,10.1.2.7,10.1.2.8"
+            //VM_LIST="10.1.2.4,10.1.2.7,10.1.2.8"
             ANSIBLE_HOST_KEY_CHECKING='False'
-            DB_HOST="petclinic-sqlserver.database.windows.net"
+            //DB_HOST="petclinic-sqlserver.database.windows.net"
             DB_USER="azureuser"
             DB_PASS="Password123!"
       }
