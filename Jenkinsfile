@@ -5,7 +5,6 @@ pipeline {
       steps {
         copyArtifacts(
             projectName: 'CreateInfrastructure',
-            selector: [$class: 'StatusBuildSelector', stable: false],
             filter: 'deploy-info.txt',
             target: 'Infrastructure',
             flatten: true
