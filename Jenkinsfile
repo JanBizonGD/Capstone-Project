@@ -17,8 +17,8 @@ pipeline {
           echo "Converted IPs: ${conv_ips}"
           def lb_ip = props.LB_IP
 
-          def descriptionText = "🚀 Deployed to http://${lb_ip}"
-          currentBuild.rawBuild.setDescription(descriptionText)
+          def descriptionText = "🚀 Deployed to <a href='http://${lb_ip}'>http://${lb_ip}</a>"
+          Jenkins.instance.getItem("DeployProject").setDescription(descriptionText)
 
           env.VM_LIST = conv_ips
           env.DB_HOST = props.URIs
@@ -110,21 +110,21 @@ pipeline {
         }
       }
       steps {
-        //input message: 'Would you like to deploy?', ok: 'Yes', cancel: 'No'
+        currentBuild.rawBuild.setDescription('Would you like to deploy?')
+        input message: 'Would you like to deploy?', ok: 'Yes', cancel: 'No'
         sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker rm -f petclinic || true"'
         sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker images $MAIN_REPO -q | xargs docker rmi -f || true"'
         sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker login -u $artifact_repo_USR -p $artifact_repo_PSW acrpetclinic1234.azurecr.io"'
         sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker pull acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
         sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker run -d --name petclinic -p 80:8080 acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
+        currentBuild.rawBuild.setDescription('🚀')
+
 //ansible all -i <vm_ip>, -u <user> -m shell -a "docker run -d --name myapp -e DB_HOST=<mysql_host> -e DB_USER=<user> -e DB_PASS=<pass> -p 80:80 <registry_url>/myapp:latest"
-// TODO: Display link
 // TODO: connect to sql database
       }
       environment {
             deployment_group_cred = credentials('deploy-group-cred')
-            //VM_LIST="10.1.2.4,10.1.2.7,10.1.2.8"
             ANSIBLE_HOST_KEY_CHECKING='False'
-            //DB_HOST="petclinic-sqlserver.database.windows.net"
             DB_USER="azureuser"
             DB_PASS="Password123!"
       }
