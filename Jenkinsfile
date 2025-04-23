@@ -110,7 +110,9 @@ pipeline {
         }
       }
       steps {
-        currentBuild.rawBuild.setDescription('Would you like to deploy?')
+        script {
+         currentBuild.rawBuild.setDescription('Would you like to deploy?') 
+        }
         input message: 'Would you like to deploy?', ok: 'Yes', cancel: 'No'
         sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker rm -f petclinic || true"'
         sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker images $MAIN_REPO -q | xargs docker rmi -f || true"'
