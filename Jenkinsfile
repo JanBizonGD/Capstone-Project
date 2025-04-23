@@ -111,7 +111,7 @@ pipeline {
       }
       steps {
         script {
-         currentBuild.rawBuild.setDescription('Would you like to deploy?') 
+          currentBuild.rawBuild.setDescription('Would you like to deploy?') 
         }
         input message: 'Would you like to deploy?', ok: 'Yes', cancel: 'No'
         sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker rm -f petclinic || true"'
@@ -119,7 +119,9 @@ pipeline {
         sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker login -u $artifact_repo_USR -p $artifact_repo_PSW acrpetclinic1234.azurecr.io"'
         sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker pull acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
         sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker run -d --name petclinic -p 80:8080 acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
-        currentBuild.rawBuild.setDescription('🚀')
+        script {
+          currentBuild.rawBuild.setDescription('🚀')
+        }
 
 //ansible all -i <vm_ip>, -u <user> -m shell -a "docker run -d --name myapp -e DB_HOST=<mysql_host> -e DB_USER=<user> -e DB_PASS=<pass> -p 80:80 <registry_url>/myapp:latest"
 // TODO: connect to sql database
