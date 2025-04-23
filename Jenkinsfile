@@ -34,19 +34,19 @@ pipeline {
       steps {
         sh './gradlew -v'
         sh 'echo $JAVA_HOME'
-        sh './gradlew check -x test --stacktrace'
+        sh './gradlew check -x test --stacktrace --args="-Dspring.profiles.active=mysql"'
         archiveArtifacts(artifacts: 'build/reports/checkstyleNohttp/nohttp.html', fingerprint: true)
       }
     }
-    // stage('Java test with Gradle') {
-    //   steps {
-    //     sh './gradlew test'
-    //   }
-      //archiveArtifacts(artifacts: 'build/reports/tests/test/*', fingerprint: true)
-    //}
+    stage('Java test with Gradle') {
+      steps {
+        sh './gradlew test --args="-Dspring.profiles.active=mysql"'
+      }
+      archiveArtifacts(artifacts: 'build/reports/tests/test/*', fingerprint: true)
+    }
     stage('Java build with Gradle') {
       steps {
-        sh './gradlew build  -x test'
+        sh './gradlew build  -x test --args="-Dspring.profiles.active=mysql"'
       }
     }
     stage('Docker build with docker') {
@@ -113,15 +113,16 @@ pipeline {
         script {
           currentBuild.rawBuild.setDescription('Would you like to deploy?') 
         }
-        input id: 'Deploy', 
-                message: 'Would you like to deploy?', 
-                ok: 'Yes', 
-                cancel: 'No'
+        // input id: 'Deploy', 
+        //         message: 'Would you like to deploy?', 
+        //         ok: 'Yes', 
+        //         cancel: 'No'
         sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker rm -f petclinic || true"'
         sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker images $MAIN_REPO -q | xargs docker rmi -f || true"'
         sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker login -u $artifact_repo_USR -p $artifact_repo_PSW acrpetclinic1234.azurecr.io"'
         sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker pull acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
-        sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker run -d --name petclinic -p 80:8080 acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
+        //sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker run -d --name petclinic -p 80:8080 acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
+        sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker run -d --name petclinic -e DB_HOST=$DB_HOST -e DB_USER=$DB_USER -e DB_PASS=$DB_PASS -p 80:8080 acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
         script {
           currentBuild.rawBuild.setDescription('🚀')
         }

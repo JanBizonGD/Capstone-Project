@@ -40,5 +40,5 @@ COPY --from=deps build/target/extracted/application/ ./
 
 EXPOSE 8080
 
-ENTRYPOINT [ "java", "org.springframework.boot.loader.launch.JarLauncher" ]
+ENTRYPOINT [ "java", "-Dspring.profiles.active=mysql", "org.springframework.boot.loader.launch.JarLauncher" ]
 
