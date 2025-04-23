@@ -4,19 +4,19 @@ pipeline {
     stage('Load variables'){
       steps {
         copyArtifacts(
-            projectName: 'CreateInfrastructure',
+            projectName: 'Infrastructure',
             filter: 'deploy-info.txt',
             target: 'Infrastructure',
             flatten: true
         )
-        // script {
-        //   def props = readProperties file: 'Infrastructure/deploy-info.txt'
-        //   //env.VM_LIST = //
-        //   //env.DB_HOST = //
-        //   echo "IPs: ${props.IPs}"
-        //   echo "Host name: ${props.URIs}"
-        //   //echo "${props.URIs}" | jq -r 'join(",")'
-        // }
+        script {
+          def props = readProperties file: 'Infrastructure/deploy-info.txt'
+          //env.VM_LIST = //
+          //env.DB_HOST = //
+          echo "IPs: ${props.IPs}"
+          echo "Host name: ${props.URIs}"
+          //echo "${props.URIs}" | jq -r 'join(",")'
+        }
       }
     }
     stage('Display branch'){
