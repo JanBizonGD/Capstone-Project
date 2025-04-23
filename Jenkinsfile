@@ -15,6 +15,10 @@ pipeline {
           echo "Host name: ${props.URIs}"
           def conv_ips = props.IPs.replace('[', '').replace(']', '').replace(' ', '').replace('"', '')
           echo "Converted IPs: ${conv_ips}"
+          def lb_ip = props.LB_IP
+
+          def descriptionText = "🚀 Deployed to http://${lb_ip}"
+          currentBuild.rawBuild.setDescription(descriptionText)
 
           env.VM_LIST = conv_ips
           env.DB_HOST = props.URIs
