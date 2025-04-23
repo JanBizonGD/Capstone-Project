@@ -41,8 +41,8 @@ pipeline {
     stage('Java test with Gradle') {
       steps {
         sh './gradlew test --args="-Dspring.profiles.active=mysql"'
+        archiveArtifacts(artifacts: 'build/reports/tests/test/*', fingerprint: true)
       }
-      archiveArtifacts(artifacts: 'build/reports/tests/test/*', fingerprint: true)
     }
     stage('Java build with Gradle') {
       steps {
