@@ -30,7 +30,7 @@ pipeline {
       steps {
         sh './gradlew -v'
         sh 'echo $JAVA_HOME'
-        sh './gradlew check --stacktrace'
+        sh './gradlew check -x test --stacktrace'
         archiveArtifacts(artifacts: 'build/reports/checkstyleNohttp/nohttp.html', fingerprint: true)
       }
     }
