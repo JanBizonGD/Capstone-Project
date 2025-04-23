@@ -34,19 +34,19 @@ pipeline {
       steps {
         sh './gradlew -v'
         sh 'echo $JAVA_HOME'
-        sh './gradlew check -x test --stacktrace --args="-Dspring.profiles.active=mysql"'
+        sh './gradlew check -x test --stacktrace'
         archiveArtifacts(artifacts: 'build/reports/checkstyleNohttp/nohttp.html', fingerprint: true)
       }
     }
     stage('Java test with Gradle') {
       steps {
-        sh './gradlew test --args="-Dspring.profiles.active=mysql"'
+        sh './gradlew test'
         archiveArtifacts(artifacts: 'build/reports/tests/test/*', fingerprint: true)
       }
     }
     stage('Java build with Gradle') {
       steps {
-        sh './gradlew build  -x test --args="-Dspring.profiles.active=mysql"'
+        sh './gradlew build  -x test'
       }
     }
     stage('Docker build with docker') {
@@ -144,6 +144,7 @@ pipeline {
     JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64/"
     DEV_REPO="petclinic_dev"
     MAIN_REPO="petclinic"
+    SPRING_PROFILES_ACTIVE="mysql"
   }
 }
 //
