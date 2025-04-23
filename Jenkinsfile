@@ -15,7 +15,8 @@ pipeline {
           //env.DB_HOST = //
           echo "IPs: ${props.IPs}"
           echo "Host name: ${props.URIs}"
-          echo "${props.URIs}" | jq -r 'join(",")'
+          def conv_uri = props.URIs.replace('[', '').replace(']', '').replace(' ', '')
+          echo "${conv_uri}"
         }
       }
     }
