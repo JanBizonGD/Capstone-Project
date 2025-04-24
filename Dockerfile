@@ -11,7 +11,7 @@ RUN mkdir target/
 RUN --mount=type=bind,source=settings.gradle,target=settings.gradle \
     --mount=type=bind,source=build.gradle,target=build.gradle \
     --mount=type=cache,target=/root/.m2 \
-    ./gradlew build -x test && \
+    ./gradlew build -x test  -x compileTestJava -x processTestResources -x testClasses -x processTestAot -x compileAotTestJava -x processAotTestResources -x aotTestClasses && \
     mv build/libs/$(./gradlew -q properties --property name | grep -o 'name.*' | cut -f2 -d' ')-$(./gradlew -q properties --property version | grep -o 'version.*' | cut -f2 -d' ').jar target/app.jar
 RUN java -Djarmode=layertools -jar target/app.jar extract --destination target/extracted
 

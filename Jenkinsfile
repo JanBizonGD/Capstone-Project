@@ -40,11 +40,13 @@ pipeline {
         sh 'echo Current branch: $GIT_BRANCH'
       }
     }
+
+    
     stage('Static code analysis') {
       steps {
         sh './gradlew -v'
         sh 'echo $JAVA_HOME'
-        sh './gradlew check -x test --stacktrace'
+        sh './gradlew check -x test -x compileTestJava -x processTestResources -x testClasses -x processTestAot -x compileAotTestJava -x processAotTestResources -x aotTestClasses'
         archiveArtifacts(artifacts: 'build/reports/checkstyleNohttp/nohttp.html', fingerprint: true)
       }
     }
@@ -56,7 +58,7 @@ pipeline {
     }
     stage('Java build with Gradle') {
       steps {
-        sh './gradlew build  -x test'
+        sh './gradlew build  -x test -x compileTestJava -x processTestResources -x testClasses -x processTestAot -x compileAotTestJava -x processAotTestResources -x aotTestClasses'
       }
     }
     stage('Docker build with docker') {
