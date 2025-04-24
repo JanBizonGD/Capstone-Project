@@ -21,7 +21,7 @@ pipeline {
           Jenkins.instance.getItem("DeployProject").setDescription(descriptionText)
 
           env.VM_LIST = conv_ips
-          env.DB_HOST = props.URIs
+          env.MYSQL_HOST = "jdbc:mysql://${props.URIs}"
         }
       }
     }
@@ -113,16 +113,15 @@ pipeline {
         script {
           currentBuild.rawBuild.setDescription('Would you like to deploy?') 
         }
-        // input id: 'Deploy', 
-        //         message: 'Would you like to deploy?', 
-        //         ok: 'Yes', 
-        //         cancel: 'No'
+        input id: 'Deploy', 
+                message: 'Would you like to deploy?', 
+                ok: 'Yes'
         sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker rm -f petclinic || true"'
         sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker images $MAIN_REPO -q | xargs docker rmi -f || true"'
         sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker login -u $artifact_repo_USR -p $artifact_repo_PSW acrpetclinic1234.azurecr.io"'
         sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker pull acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
         //sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker run -d --name petclinic -p 80:8080 acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
-        sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker run -d --name petclinic -e DB_HOST=$DB_HOST -e DB_USER=$DB_USER -e DB_PASS=$DB_PASS -p 80:8080 acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
+        sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker run -d --name petclinic -e MYSQL_HOST=$MYSQL_HOST -e MYSQL_USER=$MYSQL_USER -e MYSQL_PASS=$MYSQL_PASS -p 80:8080 acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
         script {
           currentBuild.rawBuild.setDescription('🚀')
         }
@@ -133,8 +132,8 @@ pipeline {
       environment {
             deployment_group_cred = credentials('deploy-group-cred')
             ANSIBLE_HOST_KEY_CHECKING='False'
-            DB_USER="azureuser"
-            DB_PASS="Password123!"
+            MYSQL_USER="azureuser"
+            MYSQL_PASS="Password123!"
       }
     }
   }
