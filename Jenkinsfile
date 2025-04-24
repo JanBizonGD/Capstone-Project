@@ -1,16 +1,16 @@
 pipeline {
   agent any
-  stages {
-    stage('Approve') {
-      when {
-        expression {
-            return "$GIT_BRANCH" == 'origin/main';
-        }
-      }
-      steps {
-        input(message: 'Would you like to deploy?')
-      }
-    }
+  // stages {
+  //   stage('Approve') {
+  //     when {
+  //       expression {
+  //           return "$GIT_BRANCH" == 'origin/main';
+  //       }
+  //     }
+  //     steps {
+  //       input(message: 'Would you like to deploy?')
+  //     }
+  //   }
     stage('Load variables'){
       steps {
         copyArtifacts(
