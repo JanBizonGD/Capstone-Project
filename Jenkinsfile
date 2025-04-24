@@ -8,7 +8,7 @@ pipeline {
         }
       }
       steps {
-        input message: 'Would you like to deploy?', ok: 'Yes'
+        input(message: 'Would you like to deploy?')
       }
     }
     stage('Load variables'){
