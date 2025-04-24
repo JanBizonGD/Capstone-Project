@@ -53,7 +53,7 @@ pipeline {
     stage('Java test with Gradle') {
       steps {
         sh './gradlew test'
-        archiveArtifacts(artifacts: 'build/reports/tests/test/*', fingerprint: true)
+        archiveArtifacts(artifacts: 'build/reports/tests/test/*', fingerprint: true, onlyIfSuccessful: false)
       }
     }
     stage('Java build with Gradle') {
