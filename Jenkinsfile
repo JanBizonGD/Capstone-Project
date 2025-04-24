@@ -31,7 +31,7 @@ pipeline {
           Jenkins.instance.getItem("DeployProject").setDescription(descriptionText)
 
           env.VM_LIST = conv_ips
-          env.MYSQL_HOST = "jdbc:mysql://${props.URIs}"
+          env.MYSQL_HOST = "jdbc:mysql://${props.URIs}:3306/${env.database}"
         }
       }
     }
@@ -131,8 +131,6 @@ pipeline {
       environment {
             deployment_group_cred = credentials('deploy-group-cred')
             ANSIBLE_HOST_KEY_CHECKING='False'
-            MYSQL_USER="azureuser"
-            MYSQL_PASS="Password123!"
       }
     }
   }
@@ -143,6 +141,10 @@ pipeline {
     DEV_REPO="petclinic_dev"
     MAIN_REPO="petclinic"
     SPRING_PROFILES_ACTIVE="mysql"
+
+    MYSQL_USER="azureuser"
+    MYSQL_PASS="Password123!"
+    database="petclinicdb"
   }
 }
 //
