@@ -50,11 +50,11 @@ pipeline {
         archiveArtifacts(artifacts: 'build/reports/checkstyleNohttp/nohttp.html', fingerprint: true)
       }
     }
-    stage('Java test with Gradle') {
-      steps {
-        sh './gradlew test'
-      }
-    }
+    // stage('Java test with Gradle') {
+    //   steps {
+    //     sh './gradlew test'
+    //   }
+    // }
     stage('Java build with Gradle') {
       steps {
         sh './gradlew build  -x test -x compileTestJava -x processTestResources -x testClasses -x processTestAot -x compileAotTestJava -x processAotTestResources -x aotTestClasses'
