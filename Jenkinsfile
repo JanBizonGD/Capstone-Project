@@ -137,7 +137,7 @@ pipeline {
   }
   post {
     always {
-      archiveArtifacts(artifacts: 'build/reports/tests/test/*', fingerprint: true, onlyIfSuccessful: false)
+      archiveArtifacts(artifacts: 'build/reports/tests/test/**/*', fingerprint: true, onlyIfSuccessful: false)
     }
   }
   environment {
