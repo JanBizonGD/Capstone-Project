@@ -101,6 +101,7 @@ pipeline {
         // TODO: check if tag already exist
         sh 'git tag $RELEASE_VERSION || true'
         //sh 'git push --tags'
+        sh './gradlew tasks -Pversion=$RELEASE_VERSION'
         // TODO: Credentials
       }
     }
