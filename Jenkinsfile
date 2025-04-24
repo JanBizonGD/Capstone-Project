@@ -31,7 +31,7 @@ pipeline {
           Jenkins.instance.getItem("DeployProject").setDescription(descriptionText)
 
           env.VM_LIST = conv_ips
-          env.MYSQL_HOST = "jdbc:mysql://${props.URIs}:3306/${env.database}"
+          env.MYSQL_URL = "jdbc:mysql://${props.URIs}:3306/${env.database}"
         }
       }
     }
@@ -120,7 +120,7 @@ pipeline {
         sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker login -u $artifact_repo_USR -p $artifact_repo_PSW acrpetclinic1234.azurecr.io"'
         sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker pull acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
         //sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker run -d --name petclinic -p 80:8080 acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
-        sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker run -d --name petclinic -e MYSQL_HOST=$MYSQL_HOST -e MYSQL_USER=$MYSQL_USER -e MYSQL_PASS=$MYSQL_PASS -p 80:8080 acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
+        sh 'ansible all --become-method sudo -b -i $VM_LIST, -u $deployment_group_cred_USR --extra-vars "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker run -d --name petclinic -e MYSQL_URL=$MYSQL_URL -e MYSQL_USER=$MYSQL_USER -e MYSQL_PASS=$MYSQL_PASS -p 80:8080 acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
         script {
           currentBuild.rawBuild.setDescription('🚀')
         }
