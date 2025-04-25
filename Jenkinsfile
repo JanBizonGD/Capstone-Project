@@ -131,9 +131,6 @@ pipeline {
       environment {
             deployment_group_cred = credentials('vm-cred')
             ANSIBLE_HOST_KEY_CHECKING='False'
-            MYSQL_USER="azureuser"
-            MYSQL_PASS="Password123!"
-            SPRING_PROFILES_ACTIVE="mysql"
       }
     }
   }
@@ -145,10 +142,16 @@ pipeline {
   environment {
     DOCKER_CERT_PATH = credentials('acr-cred')
     artifact_repo = credentials('acr-cred')
+    SQL_CRED = credentials('db-cred')
+    MYSQL_USER="$SQL_CRED_USR"
+    MYSQL_PASS="$SQL_CRED_PSW"
+    
     JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64/"
     DEV_REPO="petclinic_dev"
     MAIN_REPO="petclinic"
     database="petclinicdb"
+
+    SPRING_PROFILES_ACTIVE="mysql"
   }
 }
 //
