@@ -30,9 +30,6 @@ pipeline {
       steps {
         sh './gradlew test'
       }
-      environment {
-        SPRING_PROFILES_ACTIVE="hsqldb,spring-data-jpa"
-      }
     }
     stage('Java build with Gradle') {
       steps {
@@ -145,7 +142,7 @@ pipeline {
     SQL_CRED = credentials('db-cred')
     MYSQL_USER="$SQL_CRED_USR"
     MYSQL_PASS="$SQL_CRED_PSW"
-    
+
     JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64/"
     DEV_REPO="petclinic_dev"
     MAIN_REPO="petclinic"
