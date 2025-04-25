@@ -133,6 +133,7 @@ pipeline {
             ANSIBLE_HOST_KEY_CHECKING='False'
             MYSQL_USER="azureuser"
             MYSQL_PASS="Password123!"
+            SPRING_PROFILES_ACTIVE="mysql"
       }
     }
   }
@@ -147,7 +148,6 @@ pipeline {
     JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64/"
     DEV_REPO="petclinic_dev"
     MAIN_REPO="petclinic"
-    SPRING_PROFILES_ACTIVE="mysql"
     database="petclinicdb"
   }
 }
