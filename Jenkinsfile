@@ -11,30 +11,6 @@ pipeline {
   //       input(message: 'Would you like to deploy?')
   //     }
   //   }
-    stage('Load variables'){
-      steps {
-        copyArtifacts(
-            projectName: 'Infrastructure',
-            filter: 'deploy-info.txt',
-            target: 'Infrastructure',
-            flatten: true
-        )
-        script {
-          def props = readProperties file: 'Infrastructure/deploy-info.txt'
-          echo "IPs: ${props.IPs}"
-          echo "Host name: ${props.URIs}"
-          def conv_ips = props.IPs.replace('[', '').replace(']', '').replace(' ', '').replace('"', '')
-          echo "Converted IPs: ${conv_ips}"
-          def lb_ip = props.LB_IP
-
-          def descriptionText = "🚀 Deployed to <a href='http://${lb_ip}'>http://${lb_ip}</a>"
-          Jenkins.instance.getItem("DeployProject").setDescription(descriptionText)
-
-          env.VM_LIST = conv_ips
-          env.MYSQL_URL = "jdbc:mysql://${props.URIs}:3306/${env.database}"
-        }
-      }
-    }
     stage('Display branch'){
       steps {
         sh 'echo Current branch: $GIT_BRANCH'
@@ -50,11 +26,11 @@ pipeline {
         archiveArtifacts(artifacts: 'build/reports/checkstyleNohttp/nohttp.html', fingerprint: true)
       }
     }
-    // stage('Java test with Gradle') {
-    //   steps {
-    //     sh './gradlew test'
-    //   }
-    // }
+    stage('Java test with Gradle') {
+      steps {
+        sh './gradlew test'
+      }
+    }
     stage('Java build with Gradle') {
       steps {
         sh './gradlew build  -x test -x compileTestJava -x processTestResources -x testClasses -x processTestAot -x compileAotTestJava -x processAotTestResources -x aotTestClasses'
@@ -105,7 +81,30 @@ pipeline {
         // TODO: Credentials
       }
     }
+    stage('Load variables'){
+      steps {
+        copyArtifacts(
+            projectName: 'Infrastructure',
+            filter: 'deploy-info.txt',
+            target: 'Infrastructure',
+            flatten: true
+        )
+        script {
+          def props = readProperties file: 'Infrastructure/deploy-info.txt'
+          echo "IPs: ${props.IPs}"
+          echo "Host name: ${props.URIs}"
+          def conv_ips = props.IPs.replace('[', '').replace(']', '').replace(' ', '').replace('"', '')
+          echo "Converted IPs: ${conv_ips}"
+          def lb_ip = props.LB_IP
 
+          def descriptionText = "🚀 Deployed to <a href='http://${lb_ip}'>http://${lb_ip}</a>"
+          Jenkins.instance.getItem("DeployProject").setDescription(descriptionText)
+
+          env.VM_LIST = conv_ips
+          env.MYSQL_URL = "jdbc:mysql://${props.URIs}:3306/${env.database}"
+        }
+      }
+    }
     stage('Deploy') {
       when {
         expression {
@@ -127,8 +126,10 @@ pipeline {
         }
       }
       environment {
-            deployment_group_cred = credentials('deploy-group-cred')
+            deployment_group_cred = credentials('vm-cred')
             ANSIBLE_HOST_KEY_CHECKING='False'
+            MYSQL_USER="azureuser"
+            MYSQL_PASS="Password123!"
       }
     }
   }
@@ -144,9 +145,6 @@ pipeline {
     DEV_REPO="petclinic_dev"
     MAIN_REPO="petclinic"
     //SPRING_PROFILES_ACTIVE="mysql"
-
-    MYSQL_USER="azureuser"
-    MYSQL_PASS="Password123!"
     database="petclinicdb"
   }
 }
