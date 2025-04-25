@@ -144,7 +144,7 @@ pipeline {
     JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64/"
     DEV_REPO="petclinic_dev"
     MAIN_REPO="petclinic"
-    //SPRING_PROFILES_ACTIVE="mysql"
+    SPRING_PROFILES_ACTIVE="mysql"
     database="petclinicdb"
   }
 }
