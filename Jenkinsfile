@@ -30,6 +30,9 @@ pipeline {
       steps {
         sh './gradlew test'
       }
+      environment {
+        SPRING_PROFILES_ACTIVE="mysql,test"
+      }
     }
     stage('Java build with Gradle') {
       steps {
