@@ -141,6 +141,8 @@ pipeline {
             MYSQL_USER="$SQL_CRED_USR"
             MYSQL_PASS="$SQL_CRED_PSW"
             //database="petclinicdb"
+
+            SPRING_PROFILES_ACTIVE="mysql"
       }
     }
   }
@@ -152,7 +154,6 @@ pipeline {
   environment {
     DOCKER_CERT_PATH = credentials('acr-cred')
     artifact_repo = credentials('acr-cred')
-    SPRING_PROFILES_ACTIVE="mysql"
 
 
     
