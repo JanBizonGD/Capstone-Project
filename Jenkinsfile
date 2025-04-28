@@ -150,7 +150,7 @@ pipeline {
   environment {
     DOCKER_CERT_PATH = credentials('acr-cred')
     artifact_repo = credentials('acr-cred')
-    SPRING_PROFILES_ACTIVE="mysql"
+    SPRING_PROFILES_ACTIVE="mysql,spring-data-jpa"
 
     SQL_CRED = credentials('db-cred')
     MYSQL_USER="$SQL_CRED_USR"
