@@ -134,7 +134,6 @@ pipeline {
         SQL_CRED = credentials('db-cred')
         MYSQL_USER="$SQL_CRED_USR"
         MYSQL_PASS="$SQL_CRED_PSW"
-        database="petclinicdb"
 
         SPRING_PROFILES_ACTIVE="mysql"
       }
@@ -146,9 +145,7 @@ pipeline {
     }
   }
   environment {
-    DOCKER_CERT_PATH = credentials('acr-cred')
     artifact_repo = credentials('acr-cred')
-
 
     
     JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64/"
