@@ -35,12 +35,18 @@ pipeline {
       steps {
         sh './gradlew build  -x test -x compileTestJava -x processTestResources -x testClasses -x processTestAot -x compileAotTestJava -x processAotTestResources -x aotTestClasses'
       }
+      environment{
+        database="petclinicdb"
+      }
     }
     stage('Docker build with docker') {
       steps {
         sh 'docker version'
         sh 'docker build -t petclinic:latest .'
         sh 'docker tag petclinic acrpetclinic1234.azurecr.io/$DEV_REPO:$GIT_COMMIT'
+      }
+      environment{
+        database="petclinicdb"
       }
     }
     // TODO: push jar files
