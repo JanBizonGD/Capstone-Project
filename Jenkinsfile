@@ -110,9 +110,9 @@ pipeline {
           env.MYSQL_URL = "jdbc:mysql://${props.URIs}:3306/${env.database}"
         }
       }
-      // environment{
-      //       database="petclinicdb"
-      // }
+      environment{
+            database="petclinicdb"
+      }
     }
     stage('Deploy') {
       when {
@@ -159,7 +159,7 @@ pipeline {
     JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64/"
     DEV_REPO="petclinic_dev"
     MAIN_REPO="petclinic"
-    database="petclinicdb"
+    //database="petclinicdb"
   }
 }
 //
