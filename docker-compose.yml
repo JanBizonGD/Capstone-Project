@@ -12,6 +12,8 @@ services:
       - MYSQL_DATABASE=petclinic
     volumes:
       - "./conf.d:/etc/mysql/conf.d:ro"
+      - mysql_data:/var/lib/mysql
+      - mysql_config:/etc/mysql/conf.d
   postgres:
     image: postgres:17.0
     ports:
@@ -20,3 +22,7 @@ services:
       - POSTGRES_PASSWORD=petclinic
       - POSTGRES_USER=petclinic
       - POSTGRES_DB=petclinic
+
+volumes:
+  mysql_data:
+  mysql_config:
