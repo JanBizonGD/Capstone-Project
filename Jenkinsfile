@@ -148,7 +148,7 @@ pipeline {
     MAIN_REPO="petclinic"
     database="petclinicdb"
 
-    SPRING_PROFILES_ACTIVE="mysql"
+    SPRING_PROFILES_ACTIVE="mysql,spring-data-jpa"
   }
 }
 //
