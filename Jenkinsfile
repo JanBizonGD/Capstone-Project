@@ -35,6 +35,9 @@ pipeline {
       steps {
         sh './gradlew build  -x test -x compileTestJava -x processTestResources -x testClasses -x processTestAot -x compileAotTestJava -x processAotTestResources -x aotTestClasses'
       }
+      // environment{
+      //   database="petclinicdb"
+      // }
     }
     stage('Docker build with docker') {
       steps {
@@ -42,6 +45,9 @@ pipeline {
         sh 'docker build -t petclinic:latest .'
         sh 'docker tag petclinic acrpetclinic1234.azurecr.io/$DEV_REPO:$GIT_COMMIT'
       }
+      // environment{
+      //   database="petclinicdb"
+      // }
     }
     // TODO: push jar files
     stage('Docker push to repository') {
@@ -104,6 +110,9 @@ pipeline {
           env.MYSQL_URL = "jdbc:mysql://${props.URIs}:3306/${env.database}"
         }
       }
+      // environment{
+      //       database="petclinicdb"
+      // }
     }
     stage('Deploy') {
       when {
@@ -139,6 +148,7 @@ pipeline {
   environment {
     DOCKER_CERT_PATH = credentials('acr-cred')
     artifact_repo = credentials('acr-cred')
+    SPRING_PROFILES_ACTIVE="mysql"
     SQL_CRED = credentials('db-cred')
     MYSQL_USER="$SQL_CRED_USR"
     MYSQL_PASS="$SQL_CRED_PSW"
@@ -147,8 +157,6 @@ pipeline {
     DEV_REPO="petclinic_dev"
     MAIN_REPO="petclinic"
     database="petclinicdb"
-
-    SPRING_PROFILES_ACTIVE="mysql"
   }
 }
 //
