@@ -152,11 +152,11 @@ pipeline {
   environment {
     DOCKER_CERT_PATH = credentials('acr-cred')
     artifact_repo = credentials('acr-cred')
-    SPRING_PROFILES_ACTIVE="mysql,spring-data-jpa"
+    SPRING_PROFILES_ACTIVE="mysql"
 
 
     
-    //JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64/"
+    JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64/"
     DEV_REPO="petclinic_dev"
     MAIN_REPO="petclinic"
     //database="petclinicdb"
