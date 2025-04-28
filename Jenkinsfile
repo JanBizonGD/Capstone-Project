@@ -30,6 +30,9 @@ pipeline {
       steps {
         sh './gradlew test'
       }
+      environment{
+        SPRING_PROFILES_ACTIVE="h2,spring-data-jpa"
+      }
     }
     stage('Java build with Gradle') {
       steps {
@@ -104,6 +107,9 @@ pipeline {
           env.MYSQL_URL = "jdbc:mysql://${props.URIs}:3306/${env.database}"
         }
       }
+      environment{
+            database="petclinicdb"
+      }
     }
     stage('Deploy') {
       when {
@@ -141,14 +147,13 @@ pipeline {
     }
   }
   environment {
-    DOCKER_CERT_PATH = credentials('acr-cred')
+   // DOCKER_CERT_PATH = credentials('acr-cred')
     artifact_repo = credentials('acr-cred')
 
 
     JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64/"
     DEV_REPO="petclinic_dev"
     MAIN_REPO="petclinic"
-    database="petclinicdb"
 
   }
 }
