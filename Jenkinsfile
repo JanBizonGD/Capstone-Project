@@ -156,7 +156,7 @@ pipeline {
     MYSQL_USER="$SQL_CRED_USR"
     MYSQL_PASS="$SQL_CRED_PSW"
     
-    JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64/"
+    //JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64/"
     DEV_REPO="petclinic_dev"
     MAIN_REPO="petclinic"
     //database="petclinicdb"
