@@ -144,7 +144,7 @@ pipeline {
     }
   }
   environment {
-   // DOCKER_CERT_PATH = credentials('acr-cred')
+    DOCKER_CERT_PATH = credentials('acr-cred')
     artifact_repo = credentials('acr-cred')
     SPRING_PROFILES_ACTIVE="mysql,spring-data-jpa"
 
