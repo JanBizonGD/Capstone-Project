@@ -31,7 +31,7 @@ pipeline {
         sh './gradlew test'
       }
       environment{
-        SPRING_PROFILES_ACTIVE="h2,spring-data-jpa"
+        SPRING_PROFILES_ACTIVE="mysql,spring-data-jpa"
       }
     }
     stage('Java build with Gradle') {
