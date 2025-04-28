@@ -100,7 +100,7 @@ pipeline {
           def descriptionText = "🚀 Deployed to <a href='http://${lb_ip}'>http://${lb_ip}</a>"
           Jenkins.instance.getItem("DeployProject").setDescription(descriptionText)
 
-          env.LB_IP = ${lb_ip}
+          env.LB_IP = lb_ip
           env.VM_LIST = conv_ips
           env.MYSQL_URL = "jdbc:mysql://${props.URIs}:3306/${env.database}"
         }
