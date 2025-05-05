@@ -127,9 +127,9 @@ pipeline {
         }
       }
       steps {
-        when {
-          expression { deployToUat == true }
-        }
+        // when {
+        //   expression { deployToUat == true }
+        // }
         script {
           currentBuild.rawBuild.setDescription('Would you like to deploy?') 
         }
