@@ -150,8 +150,8 @@ pipeline {
         MYSQL_USER="$SQL_CRED_USR"
         MYSQL_PASS="$SQL_CRED_PSW"
 
-        SPRING_SQL_INIT_MODE="never"
-        SPRING_PROFILES_ACTIVE="mysql,spring-data-jpa"
+        //SPRING_SQL_INIT_MODE="never"
+        SPRING_PROFILES_ACTIVE="mysql" //,spring-data-jpa
       }
     }
   }
