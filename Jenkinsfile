@@ -127,18 +127,25 @@ pipeline {
         }
       }
       steps {
-        // when {
-        //   expression { deployToUat == true }
-        // }
-        script {
-          currentBuild.rawBuild.setDescription('Would you like to deploy?') 
-        }
-        //input ("Would you like to deploy?")
         sh 'ansible all --become-method sudo -b -i $LB_IP, -u $deployment_group_cred_USR -e "ansible_port=50001" -e "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker rm -f petclinic || true"'
         sh 'ansible all --become-method sudo -b -i $LB_IP, -u $deployment_group_cred_USR -e "ansible_port=50001" -e "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker images $MAIN_REPO -q | xargs docker rmi -f || true"'
         sh 'ansible all --become-method sudo -b -i $LB_IP, -u $deployment_group_cred_USR -e "ansible_port=50001" -e "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker login -u $artifact_repo_USR -p $artifact_repo_PSW acrpetclinic1234.azurecr.io"'
         sh 'ansible all --become-method sudo -b -i $LB_IP, -u $deployment_group_cred_USR -e "ansible_port=50001" -e "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker pull acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
-        sh 'ansible all --become-method sudo -b -i $LB_IP, -u $deployment_group_cred_USR -e "ansible_port=50001" -e "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker run -d --name petclinic -e MYSQL_URL=$MYSQL_URL -e MYSQL_USER=$MYSQL_USER -e MYSQL_PASS=$MYSQL_PASS -p 80:8080 acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
+        sh 'ansible all --become-method sudo -b -i $LB_IP, -u $deployment_group_cred_USR -e "ansible_port=50001" -e "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker run -d --name petclinic -e MYSQL_URL=$MYSQL_URL -e MYSQL_USER=$MYSQL_USER -e MYSQL_PASS=$MYSQL_PASS -e MYSQL_DATABASE=petclinic -p 80:8080 acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
+        
+        sh 'ansible all --become-method sudo -b -i $LB_IP, -u $deployment_group_cred_USR -e "ansible_port=50002" -e "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker rm -f petclinic || true"'
+        sh 'ansible all --become-method sudo -b -i $LB_IP, -u $deployment_group_cred_USR -e "ansible_port=50002" -e "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker images $MAIN_REPO -q | xargs docker rmi -f || true"'
+        sh 'ansible all --become-method sudo -b -i $LB_IP, -u $deployment_group_cred_USR -e "ansible_port=50002" -e "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker login -u $artifact_repo_USR -p $artifact_repo_PSW acrpetclinic1234.azurecr.io"'
+        sh 'ansible all --become-method sudo -b -i $LB_IP, -u $deployment_group_cred_USR -e "ansible_port=50002" -e "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker pull acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
+        sh 'ansible all --become-method sudo -b -i $LB_IP, -u $deployment_group_cred_USR -e "ansible_port=50002" -e "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker run -d --name petclinic -e MYSQL_URL=$MYSQL_URL -e MYSQL_USER=$MYSQL_USER -e MYSQL_PASS=$MYSQL_PASS -e MYSQL_DATABASE=petclinic -p 80:8080 acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
+        
+        sh 'ansible all --become-method sudo -b -i $LB_IP, -u $deployment_group_cred_USR -e "ansible_port=50003" -e "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker rm -f petclinic || true"'
+        sh 'ansible all --become-method sudo -b -i $LB_IP, -u $deployment_group_cred_USR -e "ansible_port=50003" -e "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker images $MAIN_REPO -q | xargs docker rmi -f || true"'
+        sh 'ansible all --become-method sudo -b -i $LB_IP, -u $deployment_group_cred_USR -e "ansible_port=50003" -e "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker login -u $artifact_repo_USR -p $artifact_repo_PSW acrpetclinic1234.azurecr.io"'
+        sh 'ansible all --become-method sudo -b -i $LB_IP, -u $deployment_group_cred_USR -e "ansible_port=50003" -e "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker pull acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
+        sh 'ansible all --become-method sudo -b -i $LB_IP, -u $deployment_group_cred_USR -e "ansible_port=50003" -e "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker run -d --name petclinic -e MYSQL_URL=$MYSQL_URL -e MYSQL_USER=$MYSQL_USER -e MYSQL_PASS=$MYSQL_PASS -e MYSQL_DATABASE=petclinic -p 80:8080 acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
+        
+        
         script {
           currentBuild.rawBuild.setDescription('🚀')
         }
@@ -150,7 +157,6 @@ pipeline {
         MYSQL_USER="$SQL_CRED_USR"
         MYSQL_PASS="$SQL_CRED_PSW"
 
-        //SPRING_SQL_INIT_MODE="never"
         SPRING_PROFILES_ACTIVE="mysql" //,spring-data-jpa
       }
     }
