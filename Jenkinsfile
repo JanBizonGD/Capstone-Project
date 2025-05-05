@@ -1,12 +1,12 @@
-def deployToUat
-steps {
-    script {
-        deployToUat = input(
-                id: 'Proceed', message: 'Deploy?', parameters: [
-                [$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Proceed with deployment?']
-        ])
-    }
-}
+// def deployToUat
+// steps {
+//     script {
+//         deployToUat = input(
+//                 id: 'Proceed', message: 'Deploy?', parameters: [
+//                 [$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Proceed with deployment?']
+//         ])
+//     }
+// }
 
 
 pipeline {
