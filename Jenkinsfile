@@ -113,7 +113,8 @@ pipeline {
 
           env.LB_IP = lb_ip
           env.VM_LIST = conv_ips
-          env.MYSQL_URL = "jdbc:mysql://${props.URIs}:3306/${env.database}"
+          env.MYSQL_URL = "jdbc:mysql://petclinic-sqlserver.privatelink.mysql.database.azure.com:3306/${env.database}"
+          //env.MYSQL_URL = "jdbc:mysql://${props.URIs}:3306/${env.database}"
         }
       }
       environment{
