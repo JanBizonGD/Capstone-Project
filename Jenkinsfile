@@ -5,9 +5,7 @@ pipeline {
       steps {
         sh 'echo Current branch: $GIT_BRANCH'
       }
-    }
-
-    
+    } 
     stage('Static code analysis') {
       steps {
         sh './gradlew -v'
@@ -139,15 +137,14 @@ pipeline {
         SPRING_PROFILES_ACTIVE="mysql"
       }
     }
-  }
-  post {
-    always {
-      archiveArtifacts(artifacts: 'build/reports/tests/test/**/*', fingerprint: true, onlyIfSuccessful: false)
+    post {
+      always {
+        archiveArtifacts(artifacts: 'build/reports/tests/test/**/*', fingerprint: true, onlyIfSuccessful: false)
+      }
     }
   }
   environment {
     artifact_repo = credentials('acr-cred')
-
     
     JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64/"
     DEV_REPO="petclinic_dev"
