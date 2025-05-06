@@ -137,12 +137,13 @@ pipeline {
         SPRING_PROFILES_ACTIVE="mysql"
       }
     }
-    post {
-      always {
-        archiveArtifacts(artifacts: 'build/reports/tests/test/**/*', fingerprint: true, onlyIfSuccessful: false)
-      }
-    }
+
   }
+  // post {
+  //   always {
+  //     archiveArtifacts(artifacts: 'build/reports/tests/test/**/*', fingerprint: true, onlyIfSuccessful: false)
+  //   }
+  // }
   environment {
     artifact_repo = credentials('acr-cred')
     
