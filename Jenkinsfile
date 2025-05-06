@@ -1,27 +1,6 @@
-// def deployToUat
-// steps {
-//     script {
-//         deployToUat = input(
-//                 id: 'Proceed', message: 'Deploy?', parameters: [
-//                 [$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Proceed with deployment?']
-//         ])
-//     }
-// }
-
-
 pipeline {
   agent any
   stages {
-  //   stage('Approve') {
-  //     when {
-  //       expression {
-  //           return "$GIT_BRANCH" == 'origin/main';
-  //       }
-  //     }
-  //     steps {
-  //       input(message: 'Would you like to deploy?')
-  //     }
-  //   }
     stage('Display branch'){
       steps {
         sh 'echo Current branch: $GIT_BRANCH'
@@ -64,7 +43,6 @@ pipeline {
     }
     stage('Change version') {
       when {
-        //branch 'origin/main'
         expression {
             return "$GIT_BRANCH" == 'origin/main';
         }
@@ -158,7 +136,7 @@ pipeline {
         MYSQL_USER="$SQL_CRED_USR"
         MYSQL_PASS="$SQL_CRED_PSW"
 
-        SPRING_PROFILES_ACTIVE="mysql" //,spring-data-jpa
+        SPRING_PROFILES_ACTIVE="mysql"
       }
     }
   }
