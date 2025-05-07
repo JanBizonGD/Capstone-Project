@@ -117,21 +117,38 @@ pipeline {
         }
       }
       steps {
-        sh 'ansible all --become-method sudo -b -i "host1 ansible_host=$LB_IP ansible_port=50001, host2 ansible_host=$LB_IP ansible_port=50002, host3 ansible_host=$LB_IP ansible_port=50003",\
+        sh 'ansible all --become-method sudo -b -i "$LB_IP:50001, $LB_IP:50002, $LB_IP:50003",\
          -u $deployment_group_cred_USR -e "ansible_password=$deployment_group_cred_PSW" \
          -m shell -a "docker rm -f petclinic || true"'
-        sh 'ansible all --become-method sudo -b -i "host1 ansible_host=$LB_IP ansible_port=50001, host2 ansible_host=$LB_IP ansible_port=50002, host3 ansible_host=$LB_IP ansible_port=50003",\
+        sh 'ansible all --become-method sudo -b -i "$LB_IP:50001, $LB_IP:50002, $LB_IP:50003",\
          -u $deployment_group_cred_USR -e "ansible_password=$deployment_group_cred_PSW" \
         -m shell -a "docker images $MAIN_REPO -q | xargs -I {} docker rmi -f {} || true"'
-        sh 'ansible all --become-method sudo -b -i "host1 ansible_host=$LB_IP ansible_port=50001, host2 ansible_host=$LB_IP ansible_port=50002, host3 ansible_host=$LB_IP ansible_port=50003",\
+        sh 'ansible all --become-method sudo -b -i "$LB_IP:50001, $LB_IP:50002, $LB_IP:50003",\
          -u $deployment_group_cred_USR -e "ansible_password=$deployment_group_cred_PSW" \
         -m shell -a "docker login -u $artifact_repo_USR -p $artifact_repo_PSW acrpetclinic1234.azurecr.io"'
-        sh 'ansible all --become-method sudo -b -i "host1 ansible_host=$LB_IP ansible_port=50001, host2 ansible_host=$LB_IP ansible_port=50002, host3 ansible_host=$LB_IP ansible_port=50003",\
+        sh 'ansible all --become-method sudo -b -i "$LB_IP:50001, $LB_IP:50002, $LB_IP:50003",\
          -u $deployment_group_cred_USR -e "ansible_password=$deployment_group_cred_PSW" \
         -m shell -a "docker pull acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
-        sh 'ansible all --become-method sudo -b -i "host1 ansible_host=$LB_IP ansible_port=50001, host2 ansible_host=$LB_IP ansible_port=50002, host3 ansible_host=$LB_IP ansible_port=50003",\
+        sh 'ansible all --become-method sudo -b -i "$LB_IP:50001, $LB_IP:50002, $LB_IP:50003",\
          -u $deployment_group_cred_USR -e "ansible_password=$deployment_group_cred_PSW" \
         -m shell -a "docker run -d --name petclinic -e MYSQL_URL=$MYSQL_URL -e MYSQL_USER=$MYSQL_USER -e MYSQL_PASS=$MYSQL_PASS -e MYSQL_DATABASE=petclinic -p 80:8080 acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
+        
+
+        // sh 'ansible all --become-method sudo -b -i "host1 ansible_host=$LB_IP ansible_port=50001, host2 ansible_host=$LB_IP ansible_port=50002, host3 ansible_host=$LB_IP ansible_port=50003",\
+        //  -u $deployment_group_cred_USR -e "ansible_password=$deployment_group_cred_PSW" \
+        //  -m shell -a "docker rm -f petclinic || true"'
+        // sh 'ansible all --become-method sudo -b -i "host1 ansible_host=$LB_IP ansible_port=50001, host2 ansible_host=$LB_IP ansible_port=50002, host3 ansible_host=$LB_IP ansible_port=50003",\
+        //  -u $deployment_group_cred_USR -e "ansible_password=$deployment_group_cred_PSW" \
+        // -m shell -a "docker images $MAIN_REPO -q | xargs -I {} docker rmi -f {} || true"'
+        // sh 'ansible all --become-method sudo -b -i "host1 ansible_host=$LB_IP ansible_port=50001, host2 ansible_host=$LB_IP ansible_port=50002, host3 ansible_host=$LB_IP ansible_port=50003",\
+        //  -u $deployment_group_cred_USR -e "ansible_password=$deployment_group_cred_PSW" \
+        // -m shell -a "docker login -u $artifact_repo_USR -p $artifact_repo_PSW acrpetclinic1234.azurecr.io"'
+        // sh 'ansible all --become-method sudo -b -i "host1 ansible_host=$LB_IP ansible_port=50001, host2 ansible_host=$LB_IP ansible_port=50002, host3 ansible_host=$LB_IP ansible_port=50003",\
+        //  -u $deployment_group_cred_USR -e "ansible_password=$deployment_group_cred_PSW" \
+        // -m shell -a "docker pull acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
+        // sh 'ansible all --become-method sudo -b -i "host1 ansible_host=$LB_IP ansible_port=50001, host2 ansible_host=$LB_IP ansible_port=50002, host3 ansible_host=$LB_IP ansible_port=50003",\
+        //  -u $deployment_group_cred_USR -e "ansible_password=$deployment_group_cred_PSW" \
+        // -m shell -a "docker run -d --name petclinic -e MYSQL_URL=$MYSQL_URL -e MYSQL_USER=$MYSQL_USER -e MYSQL_PASS=$MYSQL_PASS -e MYSQL_DATABASE=petclinic -p 80:8080 acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
         
         // sh 'ansible all --become-method sudo -b -i $LB_IP, -u $deployment_group_cred_USR -e "ansible_port=50002" -e "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker rm -f petclinic || true"'
         // sh 'ansible all --become-method sudo -b -i $LB_IP, -u $deployment_group_cred_USR -e "ansible_port=50002" -e "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker images $MAIN_REPO -q | xargs -I {} docker rmi -f {} || true"'
@@ -148,7 +165,7 @@ pipeline {
 
 
 
-      
+
 
 
         script {
