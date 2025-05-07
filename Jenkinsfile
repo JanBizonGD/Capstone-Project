@@ -68,7 +68,7 @@ pipeline {
         sh 'git tag $RELEASE_VERSION || true'
         sh 'echo ${GITHUB_TOKEN}'
         withCredentials([string(credentialsId: 'github-token', variable: 'GH_TOKEN')]) {
-          git remote set-url origin https://${GH_TOKEN}@github.com/JanBizonGD/Capstone-Project.git
+          sh 'git remote set-url origin https://${GH_TOKEN}@github.com/JanBizonGD/Capstone-Project.git'
         }
         sh 'echo "version = \'$RELEASE_VERSION\'\n" > gradle.properties'
         sh 'git add gradle.properties'
