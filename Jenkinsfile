@@ -173,3 +173,4 @@ pipeline {
     MAIN_REPO="petclinic"
   }
 }
+\\
