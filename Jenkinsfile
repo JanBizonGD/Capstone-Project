@@ -28,6 +28,9 @@ pipeline {
       }
     }
     stage('Docker build with docker') {
+      when {
+        expression { params.Type == 'Docker' }
+      }
       steps {
         sh 'docker version'
         sh 'docker build -t petclinic:latest .'
@@ -36,6 +39,9 @@ pipeline {
     }
     // TODO: push jar files
     stage('Docker push to repository') {
+      when {
+        expression { params.Type == 'Docker' }
+      }
       steps {
         sh 'docker images'
         sh 'docker login -u $artifact_repo_USR -p $artifact_repo_PSW acrpetclinic1234.azurecr.io' 
@@ -57,14 +63,13 @@ pipeline {
     stage('Docker push to main') {
       when {
         expression {
-            return "$GIT_BRANCH" == 'origin/main';
+            return "$GIT_BRANCH" == 'origin/main' && params.Type == 'Docker';
         }
       }
       steps {
         sh 'docker login -u $artifact_repo_USR -p $artifact_repo_PSW acrpetclinic1234.azurecr.io'
         sh 'docker tag petclinic acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION'
         sh 'docker push acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION'
-        // TODO: check if tag already exist
         sh 'git tag $RELEASE_VERSION || true'
         sh 'echo ${GITHUB_TOKEN}'
         withCredentials([string(credentialsId: 'github-token', variable: 'GH_TOKEN')]) {
@@ -73,9 +78,8 @@ pipeline {
         sh 'echo "version = \'$RELEASE_VERSION\'\n" > gradle.properties'
         sh 'git add gradle.properties'
         sh 'git commit -m "AUTO version increase"'
+        sh 'git push'
         sh 'git push --tags'
-        //sh './gradlew tasks -Pversion=$RELEASE_VERSION' // ?
-        // TODO: Credentials
       }
     }
     stage('Load variables'){
@@ -106,10 +110,10 @@ pipeline {
             url="petclinic-sqlserver.privatelink.mysql.database.azure.com"
       }
     }
-    stage('Deploy') {
+    stage('Docker deploy') {
       when {
         expression {
-            return "$GIT_BRANCH" == 'origin/main' && params.Deploy == true;
+            return "$GIT_BRANCH" == 'origin/main' && params.Deploy == true  && params.Type == 'Docker';
         }
       }
       steps {
