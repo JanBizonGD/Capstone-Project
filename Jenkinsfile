@@ -78,8 +78,8 @@ pipeline {
         sh 'echo "version = \'$RELEASE_VERSION\'\n" > gradle.properties'
         sh 'git add gradle.properties'
         sh 'git commit -m "AUTO version increase"'
-        sh 'git push'
-        sh 'git push --tags'
+        //sh 'git push'
+        sh 'git push --tags origin HEAD:main'
       }
     }
     stage('Load variables'){
