@@ -50,7 +50,7 @@ pipeline {
       }
       steps {
         script {
-         env.RELEASE_VERSION = sh(script: 'pysemver nextver $(sudo ./gradlew -q properties --property version | grep -o \'version.*\' | cut -f2 -d\' \' | tr -d "'") minor', returnStdout: true).trim()
+         env.RELEASE_VERSION = sh(script: 'pysemver nextver $(sudo ./gradlew -q properties --property version | grep -o \'version.*\' | cut -f2 -d\' \' | tr -d "\'") minor', returnStdout: true).trim()
         }
       }
     }
