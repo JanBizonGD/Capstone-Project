@@ -67,9 +67,14 @@ pipeline {
         // TODO: check if tag already exist
         sh 'git tag $RELEASE_VERSION || true'
         sh 'echo ${GITHUB_TOKEN}'
-        sh 'git remote set-url origin https://${GITHUB_TOKEN}@github.com/JanBizonGD/Capstone-Project.git'
+        withCredentials([string(credentialsId: 'github-token', variable: 'GH_TOKEN')]) {
+          git remote set-url origin https://${GH_TOKEN}@github.com/JanBizonGD/Capstone-Project.git
+        }
+        sh 'echo "version = \'$RELEASE_VERSION\'\n" > gradle.properties'
+        sh 'git add gradle.properties'
+        sh 'git commit -m "AUTO version increase"'
         sh 'git push --tags'
-        sh './gradlew tasks -Pversion=$RELEASE_VERSION' // ?
+        //sh './gradlew tasks -Pversion=$RELEASE_VERSION' // ?
         // TODO: Credentials
       }
     }
@@ -87,13 +92,11 @@ pipeline {
           echo "Host name: ${props.URIs}"
           // def conv_ips = props.IPs.replace('[', '').replace(']', '').replace(' ', '').replace('"', '')
           // echo "Converted IPs: ${conv_ips}"
-          def lb_ip = props.LB_IP
+          //env.VM_LIST = conv_ips
 
-          def descriptionText = "🚀 Deployed to <a href='http://${lb_ip}'>http://${lb_ip}</a>"
+          def descriptionText = "🚀 Deployed to <a href='http://${props.LB_IP}'>http://${props.LB_IP}</a>"
           Jenkins.instance.getItem("DeployProject").setDescription(descriptionText)
-
-          env.LB_IP = lb_ip
-          env.VM_LIST = conv_ips
+          env.LB_IP = props.LB_IP
           env.MYSQL_URL = "jdbc:mysql://${env.url}:3306/${env.database}"
           //env.MYSQL_URL = "jdbc:mysql://${props.URIs}:3306/${env.database}"
         }
