@@ -20,6 +20,9 @@ pipeline {
       }
     }
     stage('Java build with Gradle') {
+      when {
+        expression { params.Type == 'Gradle' }
+      }
       steps {
         sh './gradlew build  -x test -x compileTestJava -x processTestResources -x testClasses -x processTestAot -x compileAotTestJava -x processAotTestResources -x aotTestClasses'
       }
@@ -63,7 +66,8 @@ pipeline {
         sh 'docker push acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION'
         // TODO: check if tag already exist
         sh 'git tag $RELEASE_VERSION || true'
-        sh 'git remote set-url origin https://${env.GITHUB_TOKEN}@github.com/JanBizonGD/Capstone-Project.git'
+        sh 'echo ${GITHUB_TOKEN}'
+        sh 'git remote set-url origin https://${GITHUB_TOKEN}@github.com/JanBizonGD/Capstone-Project.git'
         sh 'git push --tags'
         sh './gradlew tasks -Pversion=$RELEASE_VERSION' // ?
         // TODO: Credentials
