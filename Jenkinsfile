@@ -63,7 +63,8 @@ pipeline {
         sh 'docker push acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION'
         // TODO: check if tag already exist
         sh 'git tag $RELEASE_VERSION || true'
-        //sh 'git push --tags'
+        sh 'git remote set-url origin https://${env.GITHUB_TOKEN}@github.com/JanBizonGD/Capstone-Project.git'
+        sh 'git push --tags'
         sh './gradlew tasks -Pversion=$RELEASE_VERSION' // ?
         // TODO: Credentials
       }
@@ -80,8 +81,8 @@ pipeline {
           def props = readProperties file: 'Infrastructure/deploy-info.txt'
           echo "IPs: ${props.IPs}"
           echo "Host name: ${props.URIs}"
-          def conv_ips = props.IPs.replace('[', '').replace(']', '').replace(' ', '').replace('"', '')
-          echo "Converted IPs: ${conv_ips}"
+          // def conv_ips = props.IPs.replace('[', '').replace(']', '').replace(' ', '').replace('"', '')
+          // echo "Converted IPs: ${conv_ips}"
           def lb_ip = props.LB_IP
 
           def descriptionText = "🚀 Deployed to <a href='http://${lb_ip}'>http://${lb_ip}</a>"
@@ -89,12 +90,13 @@ pipeline {
 
           env.LB_IP = lb_ip
           env.VM_LIST = conv_ips
-          env.MYSQL_URL = "jdbc:mysql://petclinic-sqlserver.privatelink.mysql.database.azure.com:3306/${env.database}"
+          env.MYSQL_URL = "jdbc:mysql://${env.url}:3306/${env.database}"
           //env.MYSQL_URL = "jdbc:mysql://${props.URIs}:3306/${env.database}"
         }
       }
       environment{
             database="petclinicdb"
+            url="petclinic-sqlserver.privatelink.mysql.database.azure.com"
       }
     }
     stage('Deploy') {
@@ -122,7 +124,6 @@ pipeline {
         sh 'ansible all --become-method sudo -b -i $LB_IP, -u $deployment_group_cred_USR -e "ansible_port=50003" -e "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker pull acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
         sh 'ansible all --become-method sudo -b -i $LB_IP, -u $deployment_group_cred_USR -e "ansible_port=50003" -e "ansible_password=$deployment_group_cred_PSW" -m shell -a "docker run -d --name petclinic -e MYSQL_URL=$MYSQL_URL -e MYSQL_USER=$MYSQL_USER -e MYSQL_PASS=$MYSQL_PASS -e MYSQL_DATABASE=petclinic -p 80:8080 acrpetclinic1234.azurecr.io/$MAIN_REPO:$RELEASE_VERSION"'
         
-        
         script {
           currentBuild.rawBuild.setDescription('🚀')
         }
@@ -137,13 +138,12 @@ pipeline {
         SPRING_PROFILES_ACTIVE="mysql"
       }
     }
-
   }
-  // post {
-  //   always {
-  //     archiveArtifacts(artifacts: 'build/reports/tests/test/**/*', fingerprint: true, onlyIfSuccessful: false)
-  //   }
-  // }
+  post {
+    always {
+      archiveArtifacts(artifacts: 'build/reports/tests/test/**/*', fingerprint: true, onlyIfSuccessful: false)
+    }
+  }
   environment {
     artifact_repo = credentials('acr-cred')
     
@@ -152,4 +152,3 @@ pipeline {
     MAIN_REPO="petclinic"
   }
 }
-//
