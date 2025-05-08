@@ -4,6 +4,7 @@ pipeline {
     stage('Display branch'){
       steps {
         sh 'echo Current branch: $GIT_BRANCH'
+        sh 'echo Change branch: $BRANCH_NAME'
       }
     } 
     stage('Static code analysis') {
