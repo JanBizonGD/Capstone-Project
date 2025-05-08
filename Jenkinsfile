@@ -5,6 +5,7 @@ pipeline {
       steps {
         sh 'echo Current branch: $GIT_BRANCH'
         sh 'echo Change branch: $BRANCH_NAME'
+        sh 'echo webtrigger: $branch'
       }
     } 
     stage('Static code analysis') {
