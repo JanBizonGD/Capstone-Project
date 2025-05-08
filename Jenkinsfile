@@ -94,7 +94,6 @@ pipeline {
           def props = readProperties file: 'Infrastructure/deploy-info.txt'
           //echo "IPs: ${props.IPs}"
           //echo "Host name: ${props.URIs}"
-          // def conv_ips = props.IPs.replace('[', '').replace(']', '').replace(' ', '').replace('"', '')
 
 
           def descriptionText = "🚀 Deployed to <a href='http://${props.LB_IP}'>http://${props.LB_IP}</a>"
