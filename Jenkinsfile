@@ -95,14 +95,12 @@ pipeline {
           //echo "IPs: ${props.IPs}"
           //echo "Host name: ${props.URIs}"
           // def conv_ips = props.IPs.replace('[', '').replace(']', '').replace(' ', '').replace('"', '')
-          // echo "Converted IPs: ${conv_ips}"
-          //env.VM_LIST = conv_ips
+
 
           def descriptionText = "🚀 Deployed to <a href='http://${props.LB_IP}'>http://${props.LB_IP}</a>"
           Jenkins.instance.getItem("DeployProject").setDescription(descriptionText)
           env.LB_IP = props.LB_IP
           env.MYSQL_URL = "jdbc:mysql://${env.url}:3306/${env.database}"
-          //env.MYSQL_URL = "jdbc:mysql://${props.URIs}:3306/${env.database}"
         }
       }
       environment{
