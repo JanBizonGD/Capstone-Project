@@ -7,7 +7,7 @@ pipeline {
         sh 'echo Change branch: $BRANCH_NAME'
         sh 'echo webtrigger: $branch'
       }
-    } 
+    }
     stage('Static code analysis') {
       steps {
         sh './gradlew -v'
