@@ -5,7 +5,7 @@ pipeline {
       steps {
         sh 'echo Current branch: $GIT_BRANCH'
       }
-    } 
+    }
     stage('Static code analysis') {
       steps {
         sh './gradlew -v'
@@ -78,7 +78,6 @@ pipeline {
         sh 'echo "version = \'$RELEASE_VERSION\'\n" > gradle.properties'
         sh 'git add gradle.properties'
         sh 'git commit -m "AUTO version increase"'
-        //sh 'git push'
         sh 'git push --tags origin HEAD:main'
       }
     }
@@ -94,15 +93,12 @@ pipeline {
           def props = readProperties file: 'Infrastructure/deploy-info.txt'
           //echo "IPs: ${props.IPs}"
           //echo "Host name: ${props.URIs}"
-          // def conv_ips = props.IPs.replace('[', '').replace(']', '').replace(' ', '').replace('"', '')
-          // echo "Converted IPs: ${conv_ips}"
-          //env.VM_LIST = conv_ips
+
 
           def descriptionText = "🚀 Deployed to <a href='http://${props.LB_IP}'>http://${props.LB_IP}</a>"
           Jenkins.instance.getItem("DeployProject").setDescription(descriptionText)
           env.LB_IP = props.LB_IP
           env.MYSQL_URL = "jdbc:mysql://${env.url}:3306/${env.database}"
-          //env.MYSQL_URL = "jdbc:mysql://${props.URIs}:3306/${env.database}"
         }
       }
       environment{
@@ -157,7 +153,6 @@ pipeline {
   }
   environment {
     artifact_repo = credentials('acr-cred')
-    
     JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64/"
     DEV_REPO="petclinic_dev"
     MAIN_REPO="petclinic"
