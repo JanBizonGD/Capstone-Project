@@ -153,7 +153,6 @@ pipeline {
   }
   environment {
     artifact_repo = credentials('acr-cred')
-    
     JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64/"
     DEV_REPO="petclinic_dev"
     MAIN_REPO="petclinic"
